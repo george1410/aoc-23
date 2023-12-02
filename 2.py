@@ -1,37 +1,26 @@
-import re
-
 with open("./input/2") as file:
     lines = [line.rstrip() for line in file]
 
-max_red = 12
-max_green = 13
-max_blue = 14
+max_r, max_g, max_b = 12, 13, 14
 
 possible = []
 powers = []
 
 for line in lines:
     game_id, results = line.split(": ")
-    id = int(re.search(r"\d+", game_id).group())
+    id = int(game_id.split(" ")[1])
     games = results.split("; ")
-    is_impossible = False
-    biggest = {"red": 0, "green": 0, "blue": 0}
+    maxi = {"r": 0, "g": 0, "b": 0}
     for game in games:
         colours = game.split(", ")
         pairs = [x.split(" ") for x in colours]
         counts = {k: int(v) for v, k in pairs}
-        biggest["red"] = max(counts.get("red", 0), biggest["red"])
-        biggest["green"] = max(counts.get("green", 0), biggest["green"])
-        biggest["blue"] = max(counts.get("blue", 0), biggest["blue"])
-        if (
-            counts.get("red", 0) > max_red
-            or counts.get("green", 0) > max_green
-            or counts.get("blue", 0) > max_blue
-        ):
-            is_impossible = True
-    if not is_impossible:
+        maxi["r"] = max(counts.get("red", 0), maxi["r"])
+        maxi["g"] = max(counts.get("green", 0), maxi["g"])
+        maxi["b"] = max(counts.get("blue", 0), maxi["b"])
+    if maxi["r"] <= max_r and maxi["g"] <= max_g and maxi["b"] <= max_b:
         possible.append(id)
-    powers.append(biggest["blue"] * biggest["green"] * biggest["red"])
+    powers.append(maxi["b"] * maxi["g"] * maxi["r"])
 
 print("Part 1: ", sum(possible))
 print("Part 2: ", sum(powers))
