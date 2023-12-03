@@ -6,25 +6,22 @@ with open("./input/3") as file:
     lines = [line.rstrip() for line in file]
 
 
+def check_line(line: int, start: int, end: int):
+    for index, char in enumerate(lines[line][start : end + 1]):
+        if not re.match(r"\d|\.", char):
+            return (start + index, line, char)
+
+
 def check_surrounding(match: Match, line: int):
-    start = match.start()
+    start = max(match.start() - 1, 0)
     end = match.end()
 
-    x_search_start = start - 1 if start > 0 else 0
-    x_search_end = end + 1 if end < len(lines[line]) - 2 else end
-
-    if start > 0 and lines[line][x_search_start] != ".":
-        return (x_search_start, line, lines[line][x_search_start])
-    if end < len(lines[line]) - 1 and lines[line][end] != ".":
-        return (end, line, lines[line][end])
-    if line > 0:
-        for index, char in enumerate(lines[line - 1][x_search_start:x_search_end]):
-            if char != ".":
-                return (x_search_start + index, line - 1, char)
-    if line < len(lines) - 1:
-        for index, char in enumerate(lines[line + 1][x_search_start:x_search_end]):
-            if char != ".":
-                return (x_search_start + index, line + 1, char)
+    if res := check_line(line, start, end):
+        return res
+    if line > 0 and (res := check_line(line - 1, start, end)):
+        return res
+    if line < len(lines) - 1 and (res := check_line(line + 1, start, end)):
+        return res
 
 
 part_numbers = []
