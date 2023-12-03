@@ -7,9 +7,8 @@ with open("./input/3") as file:
 
 
 def check_line(line: int, start: int, end: int):
-    for index, char in enumerate(lines[line][start : end + 1]):
-        if not re.match(r"\d|\.", char):
-            return (start + index, line, char)
+    if match := re.search(r"[^\d\.]", lines[line][start : end + 1]):
+        return (match.start() + start, line, match.group())
 
 
 def check_surrounding(match: Match, line: int):
