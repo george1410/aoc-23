@@ -23,19 +23,17 @@ def check_surrounding(match: Match, line: int):
         return res
 
 
-part_numbers = []
-star_adjacents = defaultdict(list)
+adjacents = defaultdict(list)
 for index, line in enumerate(lines):
     matches = re.finditer(r"\d+", line)
     for match in matches:
         surrounding = check_surrounding(match, index)
         if surrounding is None:
             continue
-        part_numbers.append(int(match.group()))
-        if surrounding[2] == "*":
-            star_adjacents[surrounding].append(int(match.group()))
+        adjacents[surrounding].append(int(match.group()))
 
-gear_ratios = [v[0] * v[1] for v in star_adjacents.values() if len(v) == 2]
+part_numbers = [item for x in adjacents.values() for item in x]
+gear_ratios = [v[0] * v[1] for k, v in adjacents.items() if len(v) == 2 and k[2] == "*"]
 
 print("Part 1: ", sum(part_numbers))
 print("Part 2: ", sum(gear_ratios))
